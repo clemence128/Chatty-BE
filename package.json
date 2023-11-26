@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon src/app.ts",
     "build": "rimraf ./dist && tsc && tsc-alias",
-    "start": "NODE_ENV=production node dist/app.js"
+    "start": "node dist/app.js"
   },
   "keywords": [],
   "author": "",
