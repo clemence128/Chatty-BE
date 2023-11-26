@@ -4,6 +4,8 @@ import HTTP_STATUS_CODES from "http-status-codes"
 import {Server} from "socket.io";
 import { MongodbConnection } from "./db/init.mongodb";
 import { CacheConnection } from "./db/init.cache";
+import router from "./routes/index.routes";
+import { isProduction } from "./config";
 
 const SERVER_PORT = 5000;
 export class AppServer {
@@ -14,9 +16,10 @@ export class AppServer {
     }
 
     public start(): void{
-        this.standardMiddleware(this.app);
-        this.globalErrorHandler(this.app);
         this.databaseConnection();
+        this.standardMiddleware(this.app);
+        this.routes(this.app);
+        this.globalErrorHandler(this.app);
         this.startServer(this.app);
     }
     
@@ -30,6 +33,10 @@ export class AppServer {
         CacheConnection.getInstance();
     }
 
+    private routes(app: Application): void{
+        app.use('/api/v1', router)
+    }
+
     private globalErrorHandler(app: Application): void{
         app.all('*', (req: Request, res: Response) => {
             res.status(HTTP_STATUS_CODES.NOT_FOUND).json({
@@ -37,8 +44,23 @@ export class AppServer {
             })
         })
 
-        app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
+        app.use((error: any, req: Request, res: Response, next: NextFunction) => {
+            const message = error.message;
+            const status = `${error.statusCode}`.startsWith('4') ? 'failed': 'error';
+            const statusCode = error.statusCode || 500;
             
+            if(isProduction){
+                return res.status(statusCode).json({
+                    status,
+                    message,
+                })    
+            }
+            
+            res.status(statusCode).json({
+                status,
+                message,
+                stack: error.stack
+            })
         })
     }
 

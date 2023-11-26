@@ -1,9 +1,11 @@
-import {RedisClientType, createClient} from "redis";
+import {createClient} from "redis";
 import config, { isProduction } from "~/config";
+
+export type RedisClient = ReturnType<typeof createClient>
 
 export class CacheConnection{
     static instance: CacheConnection
-    client: ReturnType<typeof createClient>
+    client: RedisClient
 
     constructor(){
         this.connect();
@@ -12,10 +14,9 @@ export class CacheConnection{
     private async connect(): Promise<void>{
         let connectionString = isProduction ? config.REDIS_PROD : config.REDIS_DEV;
         
-        this.client = await createClient({url: connectionString})
-                            .on('error', (error) => console.log("Connecting to Redis failed", error))
-                            .connect()
+        this.client = await createClient({url: connectionString}).connect()
         
+        this.client.on('error', (error) => console.log("Connecting to Redis failed", error))
         console.log('Connected to Redis successfully.')
     }
 
