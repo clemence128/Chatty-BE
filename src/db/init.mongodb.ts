@@ -9,12 +9,12 @@ export class MongodbConnection {
     }
 
     private connect(): void{
-        let connectionString = config.MONGODB_DEV;
+        let connectionString = config.MONGODB_PROD;
 
         if(!isProduction){
             mongoose.set('debug', true)
             mongoose.set('debug', {color: true})
-            connectionString = config.MONGODB_PROD;
+            connectionString = config.MONGODB_DEV;
         }
 
         mongoose.connect(connectionString)
