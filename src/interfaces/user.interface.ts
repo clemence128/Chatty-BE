@@ -10,11 +10,16 @@ declare global {
 }
 
 export interface AuthPayload {
-    userId: string;
-    uId: string;
+    _id: string;
     email: string;
     avatar: string;
     iat ?: string
+}
+
+export interface AuthJwtPayload{
+    userId: string;
+    iat: number;
+    exp: number;
 }
 
 export interface IUserDocument extends Document{

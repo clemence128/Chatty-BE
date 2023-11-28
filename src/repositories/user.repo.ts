@@ -6,6 +6,10 @@ class UserRepository {
         return await UserModel.findOne({email});
     }
 
+    findById = async(id: string): Promise<IUserDocument | null> => {
+        return await UserModel.findById(id);
+    }
+
     save = async ({name, email, password}: {name: string, email: string, password: string}): Promise<IUserDocument | null> => {
         return await UserModel.create({name, email, password});
     }

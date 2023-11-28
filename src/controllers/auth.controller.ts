@@ -20,6 +20,15 @@ class AuthController {
             data: await authService.signin({ password, email})
         })
     }
+
+    async handleRefreshToken(req: Request, res:Response, next: NextFunction): Promise<void>{
+        const {refreshToken} = req.body;
+
+        res.status(HTTP_STATUS_CODES.CREATED).json({
+            message: "Provide pair of token successfully",
+            data: await authService.refreshToken(refreshToken)
+        })
+    }
 }
 
 export default new AuthController();

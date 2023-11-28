@@ -20,7 +20,7 @@ const signUpValidator = Joi.object({
     })
 })
 
-const signIpValidator = Joi.object({
+const signInValidator = Joi.object({
     password: Joi.string().required().min(8).max(32).messages({
         'string.base': 'Password must be a string',
         'string.min': 'Password must be at least 8 characters',
@@ -35,4 +35,11 @@ const signIpValidator = Joi.object({
     })
 })
 
-export {signUpValidator, signIpValidator}
+const refreshTokenValidator = Joi.object({
+    refreshToken: Joi.string().required().messages({      
+        'any.required': 'Please provide refresh token'
+    }),
+
+})
+
+export {signUpValidator, signInValidator, refreshTokenValidator}

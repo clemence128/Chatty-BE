@@ -1,9 +1,10 @@
-import jwt, { JsonWebTokenError } from "jsonwebtoken";
+import jwt, { JsonWebTokenError, JwtPayload } from "jsonwebtoken";
 import config from "~/config";
 import HTTP_STATUS_CODES from "http-status-codes"
 import AppError from "~/core/AppError";
 import userRepo from "~/repositories/user.repo";
 import userCache from "~/redis/user.cache";
+import { AuthJwtPayload } from "~/interfaces/user.interface";
 
 class AuthService{
 
@@ -23,6 +24,16 @@ class AuthService{
                 reslove(token as string);
             })
 
+        })
+    }
+
+    private verifyRefreshToken(token: string): Promise<AuthJwtPayload>{
+        return new Promise<AuthJwtPayload>((reslove, reject) => {
+            jwt.verify(token, config.REFRESH_TOKEN_SECRET, (err, decoded) => {
+                if(err) return reject(err);
+                
+                return reslove(decoded as AuthJwtPayload)
+            })
         })
     }
 
@@ -55,10 +66,28 @@ class AuthService{
         const [accessToken, refreshToken] = await Promise.all([this.generateAccessToken(existingUser._id.toString()), this.generateRefreshToken(existingUser._id.toString()), userCache.addUser(existingUser)]);
 
         return {
-            use: existingUser,
+            user: existingUser,
             token: {
                 accessToken,
                 refreshToken,
+            }
+        }
+    }
+
+    public async refreshToken(refreshToken: string): Promise<any>{
+        const decoded: AuthJwtPayload = await this.verifyRefreshToken(refreshToken);
+        const {userId} = decoded;
+
+        const user = await userRepo.findById(userId);
+        if(!user) throw new AppError('Something went wrong...', HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR);
+
+        const [accessToken, newRefreshToken] = await Promise.all([this.generateAccessToken(user.id.toString()), this.generateRefreshToken(user.id.toString()), userCache.addUser(user)]);
+
+        return {
+            user,
+            token: {
+                accessToken,
+                refreshToken: newRefreshToken,
             }
         }
     }
