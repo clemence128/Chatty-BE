@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/app.ts",
-    "build": "rimraf ./_dist && tsc && tsc-alias",
-    "start": "node _dist/app.js"
+    "build": "rimraf ./dist && tsc && tsc-alias",
+    "start": "node dist/app.js"
   },
   "keywords": [],
   "author": "",
