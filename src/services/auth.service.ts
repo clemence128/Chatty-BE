@@ -3,6 +3,7 @@ import config from "~/config";
 import HTTP_STATUS_CODES from "http-status-codes"
 import AppError from "~/core/AppError";
 import userRepo from "~/repositories/user.repo";
+import userCache from "~/redis/user.cache";
 
 class AuthService{
 
@@ -32,8 +33,8 @@ class AuthService{
         const user = await userRepo.save({name, email, password});
         
         if(!user) throw new AppError("Something went wrong", HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR);
-
-        const [accessToken, refreshToken] = await Promise.all([this.generateAccessToken(user._id.toString()), this.generateRefreshToken(user._id.toString())]);
+        
+        const [accessToken, refreshToken] = await Promise.all([this.generateAccessToken(user._id.toString()), this.generateRefreshToken(user._id.toString()), userCache.addUser(user)]);
 
         return {
             user,
