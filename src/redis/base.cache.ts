@@ -1,4 +1,4 @@
-import {createClient} from "redis";
+import { createClient } from "redis";
 import config, { isProduction } from "~/config";
 
 export type RedisClient = ReturnType<typeof createClient>

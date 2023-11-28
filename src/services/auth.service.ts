@@ -27,7 +27,7 @@ class AuthService{
     }
 
     public async signup({name, email, password}: {name: string, email: string, password: string}): Promise<any>{
-        const existingUser = await userRepo.findByEmailOrUsername(email);
+        const existingUser = await userRepo.findByEmail(email);
         if(existingUser) throw new AppError("This email is already in use.", HTTP_STATUS_CODES.BAD_REQUEST);
 
         const user = await userRepo.save({name, email, password});
@@ -38,6 +38,24 @@ class AuthService{
 
         return {
             user,
+            token: {
+                accessToken,
+                refreshToken,
+            }
+        }
+    }
+
+    public async signin({email, password}: {email: string, password: string}): Promise<any>{
+        const existingUser = await userRepo.findByEmail(email);
+        if(!existingUser) throw new AppError("Bad credentials", HTTP_STATUS_CODES.BAD_REQUEST);
+
+        const isCorrectPassword = await existingUser.comparePassword(password);
+        if(!isCorrectPassword) throw new AppError("Bad credentials", HTTP_STATUS_CODES.BAD_REQUEST);
+
+        const [accessToken, refreshToken] = await Promise.all([this.generateAccessToken(existingUser._id.toString()), this.generateRefreshToken(existingUser._id.toString()), userCache.addUser(existingUser)]);
+
+        return {
+            use: existingUser,
             token: {
                 accessToken,
                 refreshToken,

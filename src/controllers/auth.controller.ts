@@ -11,6 +11,15 @@ class AuthController {
             data: await authService.signup({name, password, email})
         })
     }
+
+    async signin(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const {password, email} = req.body;
+
+        res.status(HTTP_STATUS_CODES.CREATED).json({
+            message: "Signin successfully",
+            data: await authService.signin({ password, email})
+        })
+    }
 }
 
 export default new AuthController();
