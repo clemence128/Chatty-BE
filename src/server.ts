@@ -1,5 +1,6 @@
 import { Application, NextFunction, Request, Response, json, urlencoded } from "express";
 import http, { createServer } from "http";
+import cors from "cors";
 import HTTP_STATUS_CODES from "http-status-codes"
 import {Server} from "socket.io";
 import { MongodbConnection } from "./db/init.mongodb";
@@ -17,11 +18,18 @@ export class AppServer {
     public start(): void{
         this.databaseConnection();
         this.standardMiddleware(this.app);
+        this.authenticatedMiddleware(this.app);
         this.routes(this.app);
         this.globalErrorHandler(this.app);
         this.startServer(this.app);
     }
     
+    private authenticatedMiddleware(app: Application): void{
+        app.use(cors({
+            origin: 'https://stunning-monstera-5061d1.netlify.app',
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+        }));
+    }
     private standardMiddleware(app: Application): void{
         app.use(json());
         app.use(urlencoded({extended: true}))
