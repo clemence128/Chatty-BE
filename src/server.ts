@@ -3,7 +3,6 @@ import http, { createServer } from "http";
 import HTTP_STATUS_CODES from "http-status-codes"
 import {Server} from "socket.io";
 import { MongodbConnection } from "./db/init.mongodb";
-import { redisConnection } from "./db/init.cache";
 import router from "./routes/index.routes";
 import { isProduction } from "./config";
 
@@ -30,7 +29,6 @@ export class AppServer {
 
     private databaseConnection(): void{
         MongodbConnection.getInstance();
-        redisConnection.connect()
     }
 
     private routes(app: Application): void{
