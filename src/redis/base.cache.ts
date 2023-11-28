@@ -14,7 +14,3 @@ export abstract class BaseCache{
         this.client.on('error', (error) => console.log("Connecting to Redis failed", error))
     }   
 }
-
-
-
-

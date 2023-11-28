@@ -1,4 +1,4 @@
-import {createClient} from "redis";
+import {createClient} from 'redis';
 import { BaseCache } from "~/redis/base.cache";
 
 export type RedisClient = ReturnType<typeof createClient>
