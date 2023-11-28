@@ -26,7 +26,7 @@ export class AppServer {
     
     private authenticatedMiddleware(app: Application): void{
         app.use(cors({
-            origin: 'https://stunning-monstera-5061d1.netlify.app',
+            origin: isProduction ? 'https://stunning-monstera-5061d1.netlify.app' : '*',
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
         }));
     }

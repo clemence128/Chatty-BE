@@ -37,6 +37,16 @@ class AuthService{
         })
     }
 
+    public verifyAccessToken(token: string): Promise<AuthJwtPayload>{
+        return new Promise<AuthJwtPayload>((reslove, reject) => {
+            jwt.verify(token, config.ACCESS_TOKEN_SECRET, (err, decoded) => {
+                if(err) return reject(err);
+                
+                return reslove(decoded as AuthJwtPayload)
+            })
+        })
+    }
+
     public async signup({name, email, password}: {name: string, email: string, password: string}): Promise<any>{
         const existingUser = await userRepo.findByEmail(email);
         if(existingUser) throw new AppError("This email is already in use.", HTTP_STATUS_CODES.BAD_REQUEST);
@@ -91,6 +101,7 @@ class AuthService{
             }
         }
     }
+
 }
 
 export default new AuthService();
