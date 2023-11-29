@@ -14,6 +14,10 @@ class UserService{
 
         return existingUser;
     }
+
+    public async searchUser(search: string): Promise<IUserDocument[]>{
+        return await userRepo.searchUser(search);
+    }
 }
 
 export default new UserService();

@@ -13,6 +13,12 @@ class UserRepository {
     save = async ({name, email, password}: {name: string, email: string, password: string}): Promise<IUserDocument | null> => {
         return await UserModel.create({name, email, password});
     }
+
+    searchUser = async (search: string): Promise<IUserDocument[]> => {
+        return await UserModel.find({
+            name: {$regex: search, $options: "i"}
+        })
+    }
 }
 
 export default new UserRepository();

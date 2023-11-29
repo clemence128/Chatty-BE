@@ -6,5 +6,6 @@ import catchAsync from "~/utils/catchAsync";
 const router = Router();
 
 router.get('/currentUser', catchAsync(authenicate), userController.getCurrentUser)
+router.get('/', catchAsync(authenicate), userController.searchUser)
 
 export default router;

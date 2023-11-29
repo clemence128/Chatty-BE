@@ -13,7 +13,7 @@ const authenicate = async(req: Request, res: Response, next: NextFunction) => {
     const user = await userService.findById(userId);    
     if(!user) throw new AppError("Something went wrong", HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR);
 
-    const authPayload = {_id: user.id, email: user.email, avatar: user.avatar};
+    const authPayload = {_id: user.id, email: user.email, avatar: user.avatar, name: user.name};
     req.currentUser = authPayload;
 
     next()
