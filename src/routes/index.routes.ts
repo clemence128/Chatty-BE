@@ -1,6 +1,7 @@
 import { Router } from "express";
 import authRoutes from "./auth.routes";
 import userRoutes from "./user.routes";
+import conservationRoutes from "./conservation.routes";
 
 const router = Router();
 
@@ -11,6 +12,7 @@ router.get('/hello', (req, res, next) => {
 })
 
 router.use('/auth', authRoutes);
-router.use('/user', userRoutes);
+router.use('/users', userRoutes);
+router.use('/conservations', conservationRoutes);
 
 export default router;

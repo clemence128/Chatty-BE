@@ -4,12 +4,12 @@ import { IMessageDocument } from "~/interfaces/message.interface";
 const MessageSchema = new Schema<IMessageDocument>({
     sender: {
         type: Schema.Types.ObjectId,
-        ref: "UserModel"
+        ref: "User"
     },
 
     conservation: {
         type: Schema.Types.ObjectId,
-        ref: "ConservationModel"
+        ref: "Conservation"
     },
 
     content: {

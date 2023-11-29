@@ -10,11 +10,12 @@ const ConservationSchema = new Schema<IConservationDocument>({
 
     creator: {
         type: Schema.Types.ObjectId,
-        ref: "UserModel"
+        ref: "User"
     },
 
     users: {
         type: [Schema.Types.ObjectId],
+        ref: "User",
         default: []
     },
 
@@ -25,7 +26,8 @@ const ConservationSchema = new Schema<IConservationDocument>({
 
     latestMessage: {
         type: Schema.Types.ObjectId,
-        default: ''
+        ref: 'Message',
+        default: null
     },
 
 }, {timestamps: true})
