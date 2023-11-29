@@ -6,6 +6,7 @@ import {Server} from "socket.io";
 import { MongodbConnection } from "./db/init.mongodb";
 import router from "./routes/index.routes";
 import { isProduction } from "./config";
+import { UserSocket } from "./sockets/user.socket";
 
 const SERVER_PORT = 5000;
 export class AppServer {
@@ -90,5 +91,9 @@ export class AppServer {
         return io
     }
 
-    private socketIoConnections(io: Server): void{}
+    private socketIoConnections(io: Server): void{
+        const userSocket = new UserSocket(io);
+        
+        userSocket.listen();
+    }
 }

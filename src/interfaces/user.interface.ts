@@ -33,3 +33,10 @@ export interface IUserDocument extends Document{
     comparePassword(password: string): Promise<boolean>;
     hashPassword(password: string): Promise<string>;
 }
+
+export interface IUserLoginSocket {
+    _id: string,
+    name: string,
+    email: string,
+    avatar: string
+}
