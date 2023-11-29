@@ -1,6 +1,7 @@
 import { IConservationDocument } from "~/interfaces/conservation.interface";
 import ConservationModel from "~/models/conservation.model";
 import { ObjectId } from "mongodb";
+import { IMessageDocument } from "~/interfaces/message.interface";
 
 class ConseravtionRepository {
     async createConservation({name = '', creator, users, isGroup = false}: {name?: string, creator: string, users: string[], isGroup?: boolean}){
@@ -20,6 +21,10 @@ class ConseravtionRepository {
                 {users: {$elemMatch: {$eq: receiverId}}}
             ]
         })
+    }
+
+    async updateLatestMessage(message: IMessageDocument): Promise<void>{
+        await ConservationModel.updateOne({_id: message.conservation}, {latestMessage: message._id});
     }
 }
 

@@ -7,7 +7,7 @@ class ConservationService {
     private async conservationPopulate(conservation: IConservationDocument): Promise<IConservationDocument>{
         return conservation.populate('users', "-password -createdAt -updatedAt -email -__v")
                 .then((result) => result.populate('creator', '-password -createdAt -updatedAt -email -__v'))
-                // .then((result) => result.populate('latestMessage', '-__v'))
+                .then((result) => result.populate('latestMessage', '-__v'))
     }
     public async openConservation({userId, receiverId}: {userId: string, receiverId: string}){
         const existingConservation = await conservationRepo.findConservationByUsers({userId, receiverId});
