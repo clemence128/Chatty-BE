@@ -88,13 +88,15 @@ class AuthService{
         const decoded: AuthJwtPayload = await this.verifyRefreshToken(refreshToken);
         const {userId} = decoded;
 
-        const user = await userRepo.findById(userId);
-        if(!user) throw new AppError('Something went wrong...', HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR);
-
-        const [accessToken, newRefreshToken] = await Promise.all([this.generateAccessToken(user.id.toString()), this.generateRefreshToken(user.id.toString()), userCache.addUser(user)]);
-
+        let existingUser = await userCache.getUser(userId);
+        if(!existingUser){
+            existingUser = await userRepo.findById(userId);
+            if(!existingUser) throw new AppError('Something went wrong...', HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR);
+            userCache.addUser(existingUser)
+        }
+        const [accessToken, newRefreshToken] = await Promise.all([this.generateAccessToken(existingUser._id.toString()), this.generateRefreshToken(existingUser._id.toString())]);
         return {
-            user,
+            user: existingUser,
             token: {
                 accessToken,
                 refreshToken: newRefreshToken,

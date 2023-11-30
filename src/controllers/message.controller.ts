@@ -14,6 +14,16 @@ class MessageController{
             data: await messageService.createMessage({content, conservation: conservationId, sender: (currentUser as JwtPayload)._id})
         })
     }
+
+    public async getMessabeByConservation(req: Request, res: Response, next: NextFunction): Promise<void>{
+        const currentUser = req.currentUser;
+        const {conservationId} = req.params;
+        
+        res.status(HTTP_STATUS_CODES.OK).json({
+            message: 'Messages',
+            data: await messageService.getMessageByConservation({conservationId, userId: (currentUser as JwtPayload)._id})
+        })
+    }
 }
 
 export default new MessageController();

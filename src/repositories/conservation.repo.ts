@@ -17,6 +17,14 @@ class ConseravtionRepository {
         return await ConservationModel.find({creator: userId})
     }
 
+    async findUserInConservation({userId, conservationId}: {userId: string, conservationId: string}): Promise<IConservationDocument | null>{
+        return await ConservationModel.findOne({
+            _id: conservationId, 
+            users: {$elemMatch: {$eq: userId}
+        }
+    })
+    }
+
     async findConservationByUsers({userId, receiverId}:  {userId: string, receiverId: string}): Promise<IConservationDocument | null>{
         return await ConservationModel.findOne({
             isGroup: false, 

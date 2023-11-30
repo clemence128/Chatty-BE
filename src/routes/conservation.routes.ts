@@ -11,5 +11,6 @@ const router = Router();
 router.post('/openConservation', catchAsync(authenicate), catchAsync(conservationController.openConservation));
 router.get('/', catchAsync(authenicate), catchAsync(conservationController.getConservationsByUser));
 router.post('/:conservationId/messages', validate(sendMessage), catchAsync(authenicate), catchAsync(messageController.createMessage));
+router.get('/:conservationId/messages', catchAsync(authenicate), catchAsync(messageController.getMessabeByConservation));
 
 export default router;
