@@ -8,6 +8,7 @@ export interface IConservationDocument extends Document{
     users: Array<string | ObjectId>,
     isGroup ?: boolean,
     latestMessage ?: string | ObjectId,
+    avatar ?: string,
     createdAt ?: Date,
     updatedAt ?: Date
 }

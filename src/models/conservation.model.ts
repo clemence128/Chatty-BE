@@ -19,6 +19,11 @@ const ConservationSchema = new Schema<IConservationDocument>({
         default: []
     },
 
+    avatar: {
+        type: String,
+        default: "",
+    },
+    
     isGroup: {
         type: Boolean,
         default: false,
