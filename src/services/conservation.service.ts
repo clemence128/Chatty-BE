@@ -20,6 +20,12 @@ class ConservationService {
 
         return await this.conservationPopulate(conservation);
     }
+
+    public async getConservationsByUser(userId: string){
+        const conservations = await conservationRepo.findConservationsByUser(userId)
+        const conservationsMap = conservations.map(async(el) => await this.conservationPopulate(el));
+        return await Promise.all(conservationsMap)
+    }
 }
 
 export default new ConservationService();

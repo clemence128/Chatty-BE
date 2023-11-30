@@ -13,6 +13,10 @@ class ConseravtionRepository {
         return await ConservationModel.findById(id);
     }
 
+    async findConservationsByUser(userId: string): Promise<IConservationDocument[]>{
+        return await ConservationModel.find({creator: userId})
+    }
+
     async findConservationByUsers({userId, receiverId}:  {userId: string, receiverId: string}): Promise<IConservationDocument | null>{
         return await ConservationModel.findOne({
             isGroup: false, 

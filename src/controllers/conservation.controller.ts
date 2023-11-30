@@ -13,6 +13,15 @@ class ConservationController {
             data: await conservationService.openConservation({userId: (currentUser as AuthPayload)._id, receiverId})
         })
     }
+
+    public async getConservationsByUser(req: Request, res: Response, next: NextFunction): Promise<void>{
+        const currentUser = req.currentUser;
+
+        res.status(HTTP_STATUS_CODES.OK).json({
+            message: "Conservations by user",
+            data: await conservationService.getConservationsByUser((currentUser as AuthPayload)._id)
+        })
+    }
 }
 
 export default new ConservationController()
