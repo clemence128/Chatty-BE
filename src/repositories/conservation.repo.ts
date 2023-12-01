@@ -14,15 +14,14 @@ class ConseravtionRepository {
     }
 
     async findConservationsByUser(userId: string): Promise<IConservationDocument[]>{
-        return await ConservationModel.find({creator: userId})
+        return await ConservationModel.find({users: {$elemMatch: {$eq: userId}}})
     }
 
     async findUserInConservation({userId, conservationId}: {userId: string, conservationId: string}): Promise<IConservationDocument | null>{
         return await ConservationModel.findOne({
             _id: conservationId, 
-            users: {$elemMatch: {$eq: userId}
-        }
-    })
+            users: {$elemMatch: {$eq: userId}}
+        })
     }
 
     async findConservationByUsers({userId, receiverId}:  {userId: string, receiverId: string}): Promise<IConservationDocument | null>{
