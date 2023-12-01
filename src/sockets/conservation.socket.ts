@@ -24,8 +24,8 @@ export class ConservationSocket{
 
                 // Case user is online but not in conservation
                 for(const user of users){
-                    const isInRoom = this.io.sockets.adapter.rooms.has(socket.id);
-
+                    const isInRoom = this.io.sockets.adapter.rooms.get(`conservation:${conservation._id}`)?.has(socket.id);
+                    
                     if(connectedUserSocket.has(user as string) && !isInRoom){
                         socket.to(user as string).emit('receivedMessage', {message, conservation})
                     }
