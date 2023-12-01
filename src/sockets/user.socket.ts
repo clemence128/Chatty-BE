@@ -1,7 +1,7 @@
 import { Server, Socket } from "socket.io";
 import { IUserLoginSocket } from "~/interfaces/user.interface";
 
-const connectedUserSocket: Map<string, string> = new Map<string, string>();
+export const connectedUserSocket: Map<string, string> = new Map<string, string>();
 
 export class UserSocket{
     private io: Server;

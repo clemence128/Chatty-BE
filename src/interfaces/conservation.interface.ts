@@ -12,3 +12,7 @@ export interface IConservationDocument extends Document{
     createdAt ?: Date,
     updatedAt ?: Date
 }
+
+export interface IJoinConservationSocket {
+    conservation: IConservationDocument
+}

@@ -7,6 +7,7 @@ import { MongodbConnection } from "./db/init.mongodb";
 import router from "./routes/index.routes";
 import { isProduction } from "./config";
 import { UserSocket } from "./sockets/user.socket";
+import { ConservationSocket } from "./sockets/conservation.socket";
 
 const SERVER_PORT = 5000;
 export class AppServer {
@@ -93,7 +94,9 @@ export class AppServer {
 
     private socketIoConnections(io: Server): void{
         const userSocket = new UserSocket(io);
-        
+        const conservationSocket = new ConservationSocket(io);
+
         userSocket.listen();
+        conservationSocket.listen()
     }
 }
