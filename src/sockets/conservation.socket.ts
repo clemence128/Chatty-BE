@@ -14,11 +14,12 @@ export class ConservationSocket{
             socket.on("joinConservation", (data: IJoinConservationSocket) => {
                 const {conservation} = data;
                 socket.join(`conservation:${conservation._id}`)
+                console.log(`ROOMS: `, this.io.sockets.adapter.rooms)
             })
 
             socket.on("sendMessage", (data: ISendMessageSocket) => {
                 const {message, conservation} = data;
-                socket.broadcast.emit('receivedMessage', message)
+                socket.broadcast.emit('receivedMessage', {message, conservation})
                 const {users} = conservation;
 
                 // Case user is online but not in conservation
@@ -26,7 +27,7 @@ export class ConservationSocket{
                     const isInRoom = this.io.sockets.adapter.rooms.has(socket.id);
 
                     if(connectedUserSocket.has(user as string) && !isInRoom){
-                        socket.to(user as string).emit('receivedMessage', message)
+                        socket.to(user as string).emit('receivedMessage', {message, conservation})
                     }
                 }
             })
