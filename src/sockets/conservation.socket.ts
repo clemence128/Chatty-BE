@@ -1,6 +1,5 @@
 import { Server, Socket } from "socket.io";
 import { IJoinConservationSocket } from "~/interfaces/conservation.interface";
-import { ISendMessageSocket } from "~/interfaces/message.interface";
 import { connectedUserSocket } from "./user.socket";
 
 export class ConservationSocket{
@@ -17,17 +16,22 @@ export class ConservationSocket{
                 console.log(`ROOMS: `, this.io.sockets.adapter.rooms)
             })
 
-            socket.on("sendMessage", (data: ISendMessageSocket) => {
+            socket.on("sendMessage", (data) => {
                 const {message, conservation} = data;
-                socket.broadcast.emit('receivedMessage', {message, conservation})
+                socket.to(`conservation:${conservation._id}`).emit('receivedMessage', {message, conservation})
                 const {users} = conservation;
 
                 // Case user is online but not in conservation
+                // const onlineUser = Array.from(this.io.sockets.sockets.values())
+                //                     .filter(socket => connectedUserSocket.has(socket.id) && !socket.rooms.has(`conservation:${conservation._id}`))
+                //                     .map(socket => connectedUserSocket.get(socket.id))
+
                 for(const user of users){
-                    const isInRoom = this.io.sockets.adapter.rooms.get(`conservation:${conservation._id}`)?.has(socket.id);
-                    
-                    if(connectedUserSocket.has(user as string) && !isInRoom){
-                        socket.to(user as string).emit('receivedMessage', {message, conservation})
+                    if(connectedUserSocket.has(user._id)){
+                        if(!this.io.sockets.sockets.get((connectedUserSocket.get(user._id)) as string)?.rooms.has(`conservation:${conservation._id}`)){
+                            // socket.to(connectedUserSocket.get(user._id) as string).emit('receivedMessage', {message, conservation})
+                            this.io.to(connectedUserSocket.get(user._id) as string).emit('receivedMessage', {message, conservation})
+                        }
                     }
                 }
             })
