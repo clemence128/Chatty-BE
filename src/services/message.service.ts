@@ -5,11 +5,15 @@ import messageRepo from "~/repositories/message.repo";
 import HTTP_STATUS_CODES from "http-status-codes"
 
 class MessageService {
+    private async messagePopulate(message: IMessageDocument): Promise<IMessageDocument> {
+        return await message.populate("sender", "-password -createdAt -updatedAt -__v")
+    }
+
     public async createMessage({content, sender, conservation}: {content: string, sender: string, conservation: string}){
         const message = await messageRepo.createMessage({sender, content, conservation});
         await conservationRepo.updateLatestMessage(message);
 
-        return message;
+        return await this.messagePopulate(message);
 
     }
 
@@ -17,7 +21,9 @@ class MessageService {
         const userInConservation = await conservationRepo.findUserInConservation({conservationId, userId});
         if(!userInConservation) throw new AppError('Forbidden', HTTP_STATUS_CODES.FORBIDDEN)
 
-        return await messageRepo.getMessageByConservation({conservationId});
+        const messages = await messageRepo.getMessageByConservation({conservationId});
+        const messagesMap = messages.map(async(el) => await this.messagePopulate(el));
+        return await Promise.all(messagesMap);
     }
 }
 
