@@ -6,7 +6,10 @@ import AppError from "~/core/AppError";
 const validate = (validationSchema: joi.ObjectSchema): any  => {
     return async(req: Request, res: Response, next: NextFunction) => {
         try{
-            await validationSchema.validateAsync(req.body)
+            const files = req.files as Express.Multer.File[];
+            const reqBody = {...req.body}
+            if(files) reqBody['files'] = files;
+            await validationSchema.validateAsync(reqBody)
             next()
         }
         catch(error){
